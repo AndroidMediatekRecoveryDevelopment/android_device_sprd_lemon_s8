@@ -1,0 +1,98 @@
+# Inherit from SPRD common configs
+-include device/sprd/sprd-common/BoardConfigCommon.mk
+
+# Inherit from the proprietary version
+-include vendor/sprd/lemon_s8/BoardConfigVendor.mk
+
+# Platform
+TARGET_ARCH := arm
+TARGET_BOARD_PLATFORM := sc8830
+TARGET_CPU_ABI := armeabi-v7a
+TARGET_CPU_ABI2 := armeabi
+TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_CPU_VARIANT := cortex-a7
+TARGET_CPU_SMP := true
+ARCH_ARM_HAVE_TLS_REGISTER := true
+TARGET_BOOTLOADER_BOARD_NAME := SC7730SE
+TARGET_GLOBAL_CFLAGS += -mtune=cortex-a7 -mfpu=neon -mfloat-abi=softfp
+TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a7 -mfpu=neon -mfloat-abi=softfp
+BOARD_VENDOR := sprd
+TARGET_UNIFIED_DEVICE := true
+
+# Config u-boot
+TARGET_NO_BOOTLOADER := true
+BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 16777216
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1572864000
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 5872025600
+BOARD_CACHEIMAGE_PARTITION_SIZE := 209715200
+BOARD_FLASH_BLOCK_SIZE := 131072
+TARGET_USERIMAGES_USE_EXT4 := true
+BOARD_HAS_LARGE_FILESYSTEM := true
+TARGET_PLATFORM_DEVICE_BASE := /devices/sdio_emmc/
+
+# Kernel
+BOARD_KERNEL_CMDLINE := console=ttyS1,115200n8
+BOARD_KERNEL_BASE := 0x00000000
+BOARD_KERNEL_PAGESIZE := 2048
+TARGET_PREBUILT_KERNEL := device/sprd/lemon_s8/kernel
+BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 --tags_offset 0x00000100 --dt device/sprd/lemon_s8/dt.img
+
+# Resolution
+TARGET_SCREEN_HEIGHT := 854
+TARGET_SCREEN_WIDTH := 480
+
+# Recovery
+BOARD_HAS_DOWNLOAD_MODE := true
+BOARD_HAS_LARGE_FILESYSTEM := true
+BOARD_SUPPRESS_EMMC_WIPE := true
+BOARD_HAS_LARGE_FILESYSTEM := true
+BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_10x18.h\"
+TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+#TARGET_RECOVERY_FSTAB := device/sprd/lemon_s8/recovery/root/fstab.sc8830
+TARGET_RECOVERY_INITRC := device/sprd/lemon_s8/init.rc
+TARGET_USERIMAGES_USE_EXT4 := true
+
+# Recovery variant
+RECOVERY_VARIANT := carliv
+
+ifneq ($(RECOVERY_VARIANT),twrp)
+TARGET_RECOVERY_FSTAB := device/sprd/lemon_s8/recovery/etc/recovery.fstab
+endif
+
+# Assert
+TARGET_OTA_ASSERT_DEVICE := SPRD,sprd,lemon_s8,Lemon_S8,p905
+
+# TWRP
+ifeq ($(RECOVERY_VARIANT),twrp)
+RECOVERY_VARIANT := twrp
+TW_THEME := portrait_mdpi
+DEVICE_RESOLUTION := 480x854
+RECOVERY_SDCARD_ON_DATA := true
+BOARD_HAS_NO_REAL_SDCARD := true
+TW_DEFAULT_EXTERNALL_STORAGE := true
+TW_INTERNAL_STORAGE_PATH := "/internal_sd"
+TW_INTERNAL_STORAGE_MOUNT_POINT := "internal_sd"
+TW_EXTERNAL_STORAGE_PATH := "/sdcard"
+TW_EXTERNAL_STORAGE_MOUNT_POINT := "sdcard"
+TW_DEFAULT_EXTERNAL_STORAGE := true
+RECOVERY_GRAPHICS_USE_LINELENGTH := true
+TW_MAX_BRIGHTNESS := 255
+TW_NO_REBOOT_BOOTLOADER := true
+TW_HAS_DOWNLOAD_MODE := true
+TW_EXCLUDE_SUPERSU := true
+endif
+
+# CARLIV
+ifeq ($(RECOVERY_VARIANT),carliv)
+TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+DEVICE_SCREEN_WIDTH := 480
+DEVICE_SCREEN_HEIGHT := 854
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/mt_usb/musb-hdrc.0.auto/gadget/lun%d/file
+TARGET_RECOVERY_LCD_BACKLIGHT_PATH := /sys/class/leds/lcd-backlight/brightness
+VIBRATOR_TIMEOUT_FILE := /sys/devices/virtual/timed_output/vibrator/enable
+DEVICE_RESOLUTION := 480x854
+BOARD_INCLUDE_CRYPTO := true
+BOARD_USE_ADOPTED_STORAGE := true
+BOARD_USE_CUSTOM_RECOVERY_FONT := \"font_10x18.h\"
+endif
